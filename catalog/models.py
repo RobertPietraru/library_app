@@ -1,8 +1,9 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 import uuid # Required for unique book instances
 
-class Book (models.Model) :
+class Book(models.Model) :
     title=models.CharField(max_length=200)
     author=models.CharField(max_length=200)
 
@@ -27,8 +28,9 @@ class BookInstance(models.Model):
     """Un exemplar al cartii (nu-mi place cum suna instance in engleza)"""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    # models.RESTRICT e ca sa nu poti sterge cartea daca mai exista exemplare in circulatie
+    # models.RESTRICT e ca sa nu poti sterge cartea daca mai exista exemplare
     book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True)
+    borrower = models.ForeignKey(User, on_delete=models.RESTRICT, null=True, blank=True)
 
     language = models.ForeignKey( 'Language', on_delete=models.SET_NULL, null=True)
     # ii null cand cartea nu e in circulatie
