@@ -2,10 +2,8 @@
 
 {% block object-tools-items %}
 <li>
-    <form method="post" action="{% url 'report' %}">
-        {% csrf_token %}
-        <button type="submit"> Generate CSV </button>
-    </form>
+    <a href="{% url 'report' %}" class="btn btn-primary">Create report</a>
+
 </li>
 {{ block.super }}
 {% endblock %}
