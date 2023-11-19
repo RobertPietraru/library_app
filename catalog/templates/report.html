@@ -12,6 +12,11 @@
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 
 <body>
@@ -22,12 +27,11 @@
                     <input type="text" name="q" value="{{ query }}" placeholder="Search...">
                     <button type="submit">Search</button>
                 </form>
-            <a href="{% url 'download_report' %}" class="btn btn-primary">Download CSV</a>
+                <a href="{% url 'download_report' %}" class="btn btn-primary">Download CSV</a>
 
             </div>
 
             <div class="col-sm-10 ">{% block content %}
-                
                 <table border="1">
                     <thead>
                         <tr>
@@ -36,6 +40,7 @@
                             <th>Language</th>
                             <th>Due Back</th>
                             <th>Status</th>
+                            <th>Borrower</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,6 +51,7 @@
                             <td>{{ instance.language.name }}</td>
                             <td>{{ instance.due_back }}</td>
                             <td>{{ instance.get_status_display }}</td>
+                            <td>{{ instance.borrower.username }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
