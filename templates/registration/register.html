@@ -1,6 +1,25 @@
-<h2>Register</h2>
-<form method="post" action="{% url 'register' %}">
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+    {% block title %}Sign Up{% endblock %}
+
+{% block content %}
+  <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+    <button type="submit">Sign Up</button>
+  </form>
+{% endblock %}
+<p><a href="{% url 'login' %}">Login</a></p>
+</body>
+
+</html>
