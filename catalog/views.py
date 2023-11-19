@@ -6,12 +6,15 @@ from django.shortcuts import render
 
 from catalog.models import Book, BookInstance
 
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+@login_required
 def home(request):
     return render(request, 'home.html') ;
 
 
+@login_required
 def index(request):
     # Generate counts of some of the main objects
     num_books = Book.objects.all().count()
@@ -31,6 +34,7 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 
+@login_required
 def books(request):
     query = request.GET.get('q', '')
     book_instances = BookInstance.objects.filter(
