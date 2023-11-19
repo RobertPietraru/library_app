@@ -25,7 +25,7 @@ class Language(models.Model):
         return f'{self.name} ({self.english_name})'
 
 class BookInstance(models.Model):
-    """Un exemplar al cartii (nu-mi place cum suna instance in engleza)"""
+    """Un exemplar al cartii (nu-mi place cum suna 'instance' in engleza)"""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     # models.RESTRICT e ca sa nu poti sterge cartea daca mai exista exemplare

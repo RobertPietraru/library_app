@@ -9,4 +9,7 @@ urlpatterns = [
      path('books/', views.books, name='books'),
      path('report/', views.report, name='report'),
      path('download_report/', views.download_report, name='download_report'),
+     path('my_books/', views.my_books, name='my_books'),
+     path('return/<uuid:id>/', views.return_book, name='return_book'),
+     path('borrow/<uuid:id>/', views.borrow_book, name='borrow_book'),
 ]

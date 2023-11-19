@@ -1,8 +1,10 @@
 import csv
+from datetime import timedelta
+import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from catalog.models import Book, BookInstance
 
@@ -34,6 +36,47 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 
+@login_required
+def my_books(request):
+    query = request.GET.get('q', '')
+    book_instances = BookInstance.objects.filter(
+        Q(book__title__icontains=query) |
+        Q(book__author__icontains=query) |
+        Q(language__english_name__icontains=query) |
+        Q(language__name__icontains=query),
+        borrower=request.user,
+    ) 
+
+    context = {
+        'book_instances': book_instances,
+        'query': query
+    }
+
+    return render(request, 'my_books.html', context=context)
+
+@login_required
+def return_book(request, id):
+    book_instance = get_object_or_404(BookInstance, id=id)
+
+    book_instance.due_back = None
+    book_instance.status = 'a'  
+    book_instance.borrower = None
+    book_instance.save()
+
+    return redirect('my_books')
+@login_required
+def borrow_book(request, id):
+    print('yes');
+    book_instance = get_object_or_404(BookInstance, id=id)
+
+    # la noi la biblioteca ai 2 saptmanai pana trebuie sa aduci cartea
+    book_instance.due_back = datetime.datetime.now() + timedelta(days=14)
+    book_instance.status = 'o'  
+    book_instance.borrower = request.user
+    book_instance.save()
+
+    return redirect('my_books')
+    
 @login_required
 def books(request):
     query = request.GET.get('q', '')

@@ -13,10 +13,12 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   <style>
-    table, th, td {
-       border: 1px solid black;
+    table,
+    th,
+    td {
+      border: 1px solid black;
     }
-</style>
+  </style>
 </head>
 
 <body>
@@ -27,9 +29,10 @@
         <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'books' %}">All books</a></li>
+          <li><a href="{% url 'my_books' %}">My books</a></li>
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
-            <input class="btn btn-primary"  type="submit" value="logout">
+            <input class="btn btn-primary" type="submit" value="logout">
           </form>
         </ul>
         {% endblock %}
@@ -39,7 +42,7 @@
           <input type="text" name="q" value="{{ query }}" placeholder="Search...">
           <button type="submit">Search</button>
         </form>
-        <table border="1" >
+        <table border="1">
           <thead>
             <tr>
               <th>Title</th>
@@ -47,6 +50,7 @@
               <th>Language</th>
               <th>Due Back</th>
               <th>Status</th>
+              <th>Borrow</th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +61,16 @@
               <td>{{ instance.language.name }}</td>
               <td>{{ instance.due_back }}</td>
               <td>{{ instance.get_status_display }}</td>
+              <td>
+              
+              
+                {% if instance.status == 'a' %}
+                <form method="post" action="{% url 'borrow_book' instance.id %}">
+                  {% csrf_token %}
+                  <input class="btn btn-primary" type="submit" value="Borrow Book">
+                </form>
+                {% endif %}
+              </td>
             </tr>
             {% endfor %}
           </tbody>
