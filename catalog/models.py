@@ -3,6 +3,15 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 import uuid # Required for unique book instances
 
+from django.contrib.auth.models import Permission
+from django.db import models
+
+class UserIsVerified(models.Model):
+    class Meta:
+        permissions = [
+            ("user_verified", "User is verified"),
+        ]
+
 class Book(models.Model) :
     title=models.CharField(max_length=200)
     author=models.CharField(max_length=200)

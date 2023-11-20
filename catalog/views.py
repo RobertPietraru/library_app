@@ -1,4 +1,7 @@
 import csv
+from django.contrib.auth.models import User, Permission
+
+from django.contrib.auth.decorators import permission_required
 from datetime import timedelta
 import datetime
 from django.contrib.admin.views.decorators import staff_member_required
@@ -12,11 +15,16 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 @login_required
+@permission_required('catalog.user_verified', login_url='not_verified')
 def home(request):
+    print('yo');
     return render(request, 'home.html') ;
 
+def not_verified(request):
+    return render(request, 'unverified.html')
 
 @login_required
+@permission_required('catalog.user_verified',  login_url='not_verified')
 def index(request):
     # Generate counts of some of the main objects
     num_books = Book.objects.all().count()
@@ -37,6 +45,7 @@ def index(request):
 
 
 @login_required
+@permission_required('catalog.user_verified',  login_url='not_verified')
 def my_books(request):
     query = request.GET.get('q', '')
     book_instances = BookInstance.objects.filter(
@@ -55,6 +64,7 @@ def my_books(request):
     return render(request, 'my_books.html', context=context)
 
 @login_required
+@permission_required('catalog.user_verified',  login_url='not_verified')
 def return_book(request, id):
     book_instance = get_object_or_404(BookInstance, id=id)
 
@@ -65,8 +75,8 @@ def return_book(request, id):
 
     return redirect('my_books')
 @login_required
+@permission_required('catalog.user_verified',  login_url='not_verified')
 def borrow_book(request, id):
-    print('yes');
     book_instance = get_object_or_404(BookInstance, id=id)
 
     # la noi la biblioteca ai 2 saptmanai pana trebuie sa aduci cartea
@@ -78,6 +88,8 @@ def borrow_book(request, id):
     return redirect('my_books')
     
 @login_required
+@permission_required('catalog.user_verified',  login_url='not_verified')
+
 def books(request):
     query = request.GET.get('q', '')
     book_instances = BookInstance.objects.filter(
@@ -131,3 +143,23 @@ def download_report(request):
 
     return response
 
+
+
+@staff_member_required
+def verify_user(request, username):
+    user = User.objects.get(username=username)
+    print('y')
+    permission = Permission.objects.get(codename='user_verified', content_type__app_label='catalog')
+    user.user_permissions.add(permission)
+    referring_url = request.META.get('HTTP_REFERER', '/')
+
+    return redirect(referring_url)
+@staff_member_required
+def unverify_user(request, username):
+    user = User.objects.get(username=username)
+    permission = Permission.objects.get(codename='user_verified', content_type__app_label='catalog')
+    
+    user.user_permissions.remove(permission)
+    referring_url = request.META.get('HTTP_REFERER', '/')
+
+    return redirect(referring_url)
